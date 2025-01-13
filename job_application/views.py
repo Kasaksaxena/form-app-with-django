@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import Application_form
 from .models import Form
 from django.contrib import messages
+from django.core.mail import EmailMessage
 # Create your views here.
 def index(request):
     if request.method=="POST":
@@ -16,6 +17,9 @@ def index(request):
         
         Form.objects.create(first_name=first_name,last_name=last_name,email=email,
                             date=date,occupation=occupation)
+        message_body=f"A new job application was submitted.\n Thank you,{first_name}"
+        email_message=EmailMessage("Form submission confirmation",message_body,to=[email])
+        email_message.send()
         
         messages.success(request,"Form submitteed successfully")
     return render(request,"index.html")
